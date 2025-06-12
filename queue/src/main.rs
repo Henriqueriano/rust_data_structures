@@ -2,6 +2,7 @@
 struct Queue 
 {
     head: i8,
+    tail: i8,
     data: [i32;10]
 }
 trait QueueTrait 
@@ -22,6 +23,7 @@ impl QueueTrait for Queue
         Queue 
         {
             head: -1,
+            tail: -1,
             data: [0;10]
         }
     }
@@ -29,17 +31,21 @@ impl QueueTrait for Queue
     {
         if Self::is_empty(self) 
         {
-            return ();
+            panic!("The Queue is empty!");
         }
-        self.head -= 1;
+        self.head += 1;
         ()
     }
     fn push(&mut self, val: i32) -> ()
     {
         if !Self::is_full(self) 
         {
-            self.head += 1;
-            self.data[self.head as usize] = val;
+            if self.head == -1
+            {
+                self.head += 1;
+            }
+            self.tail += 1;
+            self.data[self.tail as usize] = val;
             return ();
         }
         panic!("Queue is full!");
@@ -53,9 +59,13 @@ impl QueueTrait for Queue
         panic!("The queue is empty!");
 
     }
-    fn get_tail(&mut self) -> i32 
+    fn get_tail(&mut self) -> i32
     {
-        1
+        if !Self::is_empty(self) 
+        {
+            return self.data[self.tail as usize];
+        }
+        panic!("Queue is empty");
     }
     fn is_empty(&mut self) -> bool
     {
@@ -80,5 +90,12 @@ impl QueueTrait for Queue
 }
 fn main() 
 {
-    ()
+    let mut q: Queue = Queue::new();
+    q.push(2);
+    q.show_data();
+    println!("{}", q.get_head());
+    q.pop();
+    q.push(3);
+    q.show_data();
+    println!("{}", q.get_head());
 }
